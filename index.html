@@ -200,6 +200,7 @@ h1{font-family:'Shippori Mincho',serif;font-weight:800;font-size:clamp(22px,6vw,
     </div>
     
       <p class="lead">やった日に、王冠スタンプをポンっと押すだけ。<br>自分のペースで、9週間積み重ねていきましょう。</p>
+      <div class="startcard" id="p3-startCard"></div>
       <div class="overall">
         <div class="overall-num" id="p3-overallNum">0</div>
         <div class="overall-label" id="p3-overallLabel">/ 36 個のスタンプ</div>
@@ -215,6 +216,7 @@ h1{font-family:'Shippori Mincho',serif;font-weight:800;font-size:clamp(22px,6vw,
       <button class="reset-btn" id="p3-resetBtn">記録をリセットする</button>
       <div class="status" id="p3-status"></div>
     </div>
+    <p class="note">※ リマインダー通知は、このアプリを開いているブラウザでのみ届きます。端末を閉じている間の自動通知はできないため、確実に忘れたくない場合はアラームや別途リマインダーの併用がおすすめです。</p>
   </div>
 </section>
 
@@ -252,6 +254,7 @@ h1{font-family:'Shippori Mincho',serif;font-weight:800;font-size:clamp(22px,6vw,
       <div class="eyebrow">GOLD CYCLE · 2 WEEK PROTOCOL</div>
       <h1>ゴールドサイクル<br>7つのプログラム</h1>
       <p class="lead">1日3回、ケーブルを使って。<br>やったらスタンプをポンっと押しましょう。</p>
+      <div class="startcard" id="gc-startCard"></div>
       <div class="overall">
         <div class="overall-num" id="gc-overallNum">0</div>
         <div class="overall-label" id="gc-overallLabel">/ 36 個のスタンプ</div>
@@ -274,6 +277,7 @@ h1{font-family:'Shippori Mincho',serif;font-weight:800;font-size:clamp(22px,6vw,
       <button class="reset-btn" id="gc-resetBtn">記録をリセットする</button>
       <div class="status" id="gc-status"></div>
     </div>
+    <p class="note">※ リマインダー通知は、このアプリを開いているブラウザでのみ届きます。端末を閉じている間の自動通知はできないため、確実に忘れたくない場合はアラームや別途リマインダーの併用がおすすめです。</p>
   </div>
 </section>
 
@@ -284,6 +288,7 @@ h1{font-family:'Shippori Mincho',serif;font-weight:800;font-size:clamp(22px,6vw,
       <div class="eyebrow">SOUL CYCLE · 36 DAY PROTOCOL</div>
       <h1>ソウルサイクル<br>12のプログラム</h1>
       <p class="lead">1つのプログラムを3日間連続で、1日1回。<br>12種類を積み重ねて、36日間で一巡します。</p>
+      <div class="startcard" id="sc-startCard"></div>
       <div class="overall">
         <div class="overall-num" id="sc-overallNum">0</div>
         <div class="overall-label" id="sc-overallLabel">/ 36 個のスタンプ</div>
@@ -299,6 +304,7 @@ h1{font-family:'Shippori Mincho',serif;font-weight:800;font-size:clamp(22px,6vw,
       <button class="reset-btn" id="sc-resetBtn">記録をリセットする</button>
       <div class="status" id="sc-status"></div>
     </div>
+    <p class="note">※ リマインダー通知は、このアプリを開いているブラウザでのみ届きます。端末を閉じている間の自動通知はできないため、確実に忘れたくない場合はアラームや別途リマインダーの併用がおすすめです。</p>
   </div>
 </section>
 
@@ -309,6 +315,7 @@ h1{font-family:'Shippori Mincho',serif;font-weight:800;font-size:clamp(22px,6vw,
       <div class="eyebrow">BIOENERGETIC ACTIVATION · 6 WEEK PROTOCOL</div>
       <h1>生体エネルギー<br>活性化プロトコル</h1>
       <p class="lead">1〜3週目は月・水・金に。<br>4〜6週目は、各項目を1〜2日間・最大3回の目安で。</p>
+      <div class="startcard" id="be-startCard"></div>
       <div class="overall">
         <div class="overall-num" id="be-overallNum">0</div>
         <div class="overall-label" id="be-overallLabel">/ 17 個のスタンプ</div>
@@ -324,6 +331,7 @@ h1{font-family:'Shippori Mincho',serif;font-weight:800;font-size:clamp(22px,6vw,
       <button class="reset-btn" id="be-resetBtn">記録をリセットする</button>
       <div class="status" id="be-status"></div>
     </div>
+    <p class="note">※ リマインダー通知は、このアプリを開いているブラウザでのみ届きます。端末を閉じている間の自動通知はできないため、確実に忘れたくない場合はアラームや別途リマインダーの併用がおすすめです。</p>
   </div>
 </section>
 <script>
@@ -411,12 +419,19 @@ function renderCover(){
   ];
   const GROUP_LABELS = {1:'グループ1（1〜3週目）', 2:'グループ2（4〜6週目）', 3:'グループ3（7〜9週目）'};
 
+  const START_KEY = 'power-of-three-start-date-v1';
+  const NOTIFY_KEY = 'power-of-three-notify-pref-v1';
+  const LAST_NOTIFIED_KEY = 'power-of-three-last-notified-v1';
+  const WEEKDAY_LABELS = ['日','月','火','水','木','金','土'];
+  let startDate = null;
+
   let state = null;
   const weeksContainer = document.getElementById('p3-weeksContainer');
   const overallNum = document.getElementById('p3-overallNum');
   const overallLabel = document.getElementById('p3-overallLabel');
   const overallBar = document.getElementById('p3-overallBar');
   const statusEl = document.getElementById('p3-status');
+  const startCard = document.getElementById('p3-startCard');
 
   function defaultState(){
     return { weeks: PROGRAM.map(w => ({ stamps: w.days.map(d => d.active ? false : null) })) };
@@ -519,8 +534,96 @@ function renderCover(){
     return {done, total};
   };
 
+  function todayStr(){
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  }
+  function loadStartDate(){ startDate = localStorage.getItem(START_KEY); }
+  function saveStartDate(v){ startDate = v; localStorage.setItem(START_KEY, v); }
+  function currentWeekNumber(){
+    if(!startDate) return null;
+    const start = new Date(startDate + 'T00:00:00');
+    const now = new Date();
+    const nowMid = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const startMid = new Date(start.getFullYear(), start.getMonth(), start.getDate());
+    const diffDays = Math.round((nowMid - startMid) / 86400000);
+    if(diffDays < 0) return 1;
+    return Math.min(Math.floor(diffDays/7) + 1, 9);
+  }
+  function todayTaskInfo(){
+    const week = currentWeekNumber();
+    if(!week) return null;
+    const weekDef = PROGRAM[week-1];
+    const label = WEEKDAY_LABELS[new Date().getDay()];
+    const day = weekDef.days.find(d => d.label === label && d.active);
+    return { week, task: day ? day.task : null };
+  }
+  function renderStartCard(){
+    const week = currentWeekNumber();
+    if(!startDate){
+      startCard.innerHTML = `
+        <div class="startcard-label">スタート日を選択してください</div>
+        <div>
+          <input type="date" id="p3-startDateInput">
+          <button class="startcard-btn" id="p3-setStartBtn">セットする</button>
+        </div>
+      `;
+      document.getElementById('p3-setStartBtn').addEventListener('click', ()=>{
+        const v = document.getElementById('p3-startDateInput').value;
+        if(!v){ return; }
+        saveStartDate(v);
+        renderStartCard();
+        maybeNotify();
+      });
+    } else {
+      startCard.innerHTML = `
+        <div class="startcard-current">
+          <span class="today-pill">今週は Week ${week}</span>
+          <button class="change-link" id="p3-changeStartBtn">スタート日を変更する</button>
+        </div>
+        <div class="notify-row">
+          <button class="notify-btn" id="p3-notifyBtn">🔔 リマインダー通知をオンにする</button>
+        </div>
+      `;
+      document.getElementById('p3-changeStartBtn').addEventListener('click', ()=>{
+        localStorage.removeItem(START_KEY); startDate = null;
+        renderStartCard();
+      });
+      const notifyBtn = document.getElementById('p3-notifyBtn');
+      const notifyOn = localStorage.getItem(NOTIFY_KEY) === '1' && typeof Notification !== 'undefined' && Notification.permission === 'granted';
+      if(notifyOn){ notifyBtn.textContent = '🔔 リマインダー通知：オン'; notifyBtn.classList.add('on'); }
+      notifyBtn.addEventListener('click', ()=>{
+        if(typeof Notification === 'undefined'){ alert('お使いのブラウザは通知に対応していません。'); return; }
+        Notification.requestPermission().then(perm=>{
+          if(perm === 'granted'){
+            localStorage.setItem(NOTIFY_KEY, '1');
+            renderStartCard(); maybeNotify(true);
+          } else { alert('通知が許可されませんでした。ブラウザの設定からいつでも変更できます。'); }
+        });
+      });
+    }
+  }
+  function maybeNotify(force){
+    if(typeof Notification === 'undefined') return;
+    if(Notification.permission !== 'granted') return;
+    if(localStorage.getItem(NOTIFY_KEY) !== '1') return;
+    const info = todayTaskInfo();
+    if(!info) return;
+    const today = todayStr();
+    if(!force && localStorage.getItem(LAST_NOTIFIED_KEY) === today) return;
+    if(info.task){
+      new Notification('パワーオブスリー9週間プロトコル', { body: `Week ${info.week} 今日は「${info.task}」の日です。` });
+    } else {
+      new Notification('パワーオブスリー9週間プロトコル', { body: `Week ${info.week}：今日は特に予定のない日です。` });
+    }
+    localStorage.setItem(LAST_NOTIFIED_KEY, today);
+  }
+
   loadState();
   render();
+  loadStartDate();
+  renderStartCard();
+  maybeNotify();
 })();
 
 /* ============================================================
@@ -749,12 +852,18 @@ function renderCover(){
   const WEEKS = [{"days": [{"label": "月", "slots": [["午前中", "ピュア"], ["午後", "ピュア"], ["夜", "ピュア"]]}, {"label": "火", "slots": [["午前中", "ピュア"], ["午後", "ピュア"], ["夜", "ピュア"]]}, {"label": "水", "slots": [["午前中", "ピュア"], ["午後", "ピュア"], ["夜", "ピュア"]]}, {"label": "木", "slots": [["午前中", "ピュア"], ["午後", "ピュア"], ["夜", "ピュア"]]}, {"label": "金", "slots": [["午前中", "ピュア"], ["午後", "ピュア"], ["夜", "ピュア"]]}, {"label": "土", "slots": [["午前中", "ピュア"], ["午後", "ピュア"], ["夜", "ピュア"]]}, {"label": "日", "rest": true, "restLabel": "休息日（ヒーリーは使用せず）"}]}, {"days": [{"label": "月", "slots": [["午前中", "ピュア"], ["午後", "ピュア"], ["夜", "ピュア"]]}, {"label": "火", "slots": [["午前中", "ピュア"], ["午後", "ビーイング"], ["夜", "リラックス"]]}, {"label": "水", "slots": [["午前中", "ピュア"], ["午後", "リラックス"], ["夜", "リリース"]]}, {"label": "木", "slots": [["午前中", "ピュア"], ["午後", "リリース"], ["夜", "エナジー"]]}, {"label": "金", "slots": [["午前中", "ピュア"], ["午後", "エナジー"], ["夜", "ケア"]]}, {"label": "土", "slots": [["午前中", "ピュア"], ["午後", "ケア"], ["夜", "バランス"]]}, {"label": "日", "rest": true, "restLabel": "終了"}]}];
   const TOTAL = WEEKS.reduce((acc,w)=>acc + w.days.reduce((a,d)=> a + (d.slots ? d.slots.length : 0), 0), 0);
 
+  const START_KEY = 'gold-cycle-start-date-v1';
+  const NOTIFY_KEY = 'gold-cycle-notify-pref-v1';
+  const LAST_NOTIFIED_KEY = 'gold-cycle-last-notified-v1';
+  let startDate = null;
+
   let state = null;
   const weeksContainer = document.getElementById('gc-weeksContainer');
   const overallNum = document.getElementById('gc-overallNum');
   const overallLabel = document.getElementById('gc-overallLabel');
   const overallBar = document.getElementById('gc-overallBar');
   const statusEl = document.getElementById('gc-status');
+  const startCard = document.getElementById('gc-startCard');
   overallLabel.textContent = `/ ${TOTAL} 個のスタンプ`;
 
   function defaultState(){
@@ -853,8 +962,98 @@ function renderCover(){
     return {done, total: TOTAL};
   };
 
+  function todayStr(){
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  }
+  function loadStartDate(){ startDate = localStorage.getItem(START_KEY); }
+  function saveStartDate(v){ startDate = v; localStorage.setItem(START_KEY, v); }
+  function currentWeekNumber(){
+    if(!startDate) return null;
+    const start = new Date(startDate + 'T00:00:00');
+    const now = new Date();
+    const nowMid = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const startMid = new Date(start.getFullYear(), start.getMonth(), start.getDate());
+    const diffDays = Math.round((nowMid - startMid) / 86400000);
+    if(diffDays < 0) return 1;
+    return Math.min(Math.floor(diffDays/7) + 1, 2);
+  }
+  const WEEKDAY_LABELS = ['日','月','火','水','木','金','土'];
+  function todayInfo(){
+    const week = currentWeekNumber();
+    if(!week) return null;
+    const label = WEEKDAY_LABELS[new Date().getDay()];
+    const dayDef = WEEKS[week-1].days.find(d => d.label === label);
+    if(!dayDef) return { week, rest:true };
+    if(dayDef.rest) return { week, rest:true, restLabel: dayDef.restLabel };
+    return { week, names: dayDef.slots.map(s=>s[1]).join(' / ') };
+  }
+  function renderStartCard(){
+    const week = currentWeekNumber();
+    if(!startDate){
+      startCard.innerHTML = `
+        <div class="startcard-label">スタート日を選択してください</div>
+        <div>
+          <input type="date" id="gc-startDateInput">
+          <button class="startcard-btn" id="gc-setStartBtn">セットする</button>
+        </div>
+      `;
+      document.getElementById('gc-setStartBtn').addEventListener('click', ()=>{
+        const v = document.getElementById('gc-startDateInput').value;
+        if(!v){ return; }
+        saveStartDate(v);
+        renderStartCard();
+        maybeNotify();
+      });
+    } else {
+      startCard.innerHTML = `
+        <div class="startcard-current">
+          <span class="today-pill">今週は ${week}週目</span>
+          <button class="change-link" id="gc-changeStartBtn">スタート日を変更する</button>
+        </div>
+        <div class="notify-row">
+          <button class="notify-btn" id="gc-notifyBtn">🔔 リマインダー通知をオンにする</button>
+        </div>
+      `;
+      document.getElementById('gc-changeStartBtn').addEventListener('click', ()=>{
+        localStorage.removeItem(START_KEY); startDate = null;
+        renderStartCard();
+      });
+      const notifyBtn = document.getElementById('gc-notifyBtn');
+      const notifyOn = localStorage.getItem(NOTIFY_KEY) === '1' && typeof Notification !== 'undefined' && Notification.permission === 'granted';
+      if(notifyOn){ notifyBtn.textContent = '🔔 リマインダー通知：オン'; notifyBtn.classList.add('on'); }
+      notifyBtn.addEventListener('click', ()=>{
+        if(typeof Notification === 'undefined'){ alert('お使いのブラウザは通知に対応していません。'); return; }
+        Notification.requestPermission().then(perm=>{
+          if(perm === 'granted'){
+            localStorage.setItem(NOTIFY_KEY, '1');
+            renderStartCard(); maybeNotify(true);
+          } else { alert('通知が許可されませんでした。ブラウザの設定からいつでも変更できます。'); }
+        });
+      });
+    }
+  }
+  function maybeNotify(force){
+    if(typeof Notification === 'undefined') return;
+    if(Notification.permission !== 'granted') return;
+    if(localStorage.getItem(NOTIFY_KEY) !== '1') return;
+    const info = todayInfo();
+    if(!info) return;
+    const today = todayStr();
+    if(!force && localStorage.getItem(LAST_NOTIFIED_KEY) === today) return;
+    if(info.rest){
+      new Notification('ゴールドサイクル', { body: `${info.week}週目：今日は${info.restLabel || '休息日'}です。` });
+    } else {
+      new Notification('ゴールドサイクル', { body: `${info.week}週目 今日のプログラム：${info.names}` });
+    }
+    localStorage.setItem(LAST_NOTIFIED_KEY, today);
+  }
+
   loadState();
   render();
+  loadStartDate();
+  renderStartCard();
+  maybeNotify();
 })();
 
 /* ============================================================
@@ -866,12 +1065,18 @@ function renderCover(){
   const PROGRAMS = [["容認", "あるがままの私たちを受け入れる能力のエネルギー的な調和"], ["平静", "エネルギーフィールドのインナーバランスを刺激する"], ["重荷", "解放のためのエネルギー的サポート"], ["感情", "感情を処理するためのエネルギー的サポート"], ["オーラピュア", "エネルギーフィールドを浄化する"], ["幸福", "エネルギーフィールドの前向きな調整"], ["自信", "自分自身への内部の接続のエネルギー的刺激"], ["インナーバランス", "内面の一貫性のエネルギー的刺激"], ["パワーリザーブ", "生体エネルギーフィールドを刺激する（夜遅くまで使用しないこと）"], ["自負心", "生体エネルギーフィールド内部の中心化"], ["エネルギーバランス", "エネルギーの中心のバランスを取る"], ["鼓舞", "エネルギーの再生を刺激する"]]; // [[name, desc], ...] x12, each spans 3 days
   const TOTAL = PROGRAMS.length * 3;
 
+  const START_KEY = 'soul-cycle-start-date-v1';
+  const NOTIFY_KEY = 'soul-cycle-notify-pref-v1';
+  const LAST_NOTIFIED_KEY = 'soul-cycle-last-notified-v1';
+  let startDate = null;
+
   let state = null;
   const weeksContainer = document.getElementById('sc-weeksContainer');
   const overallNum = document.getElementById('sc-overallNum');
   const overallLabel = document.getElementById('sc-overallLabel');
   const overallBar = document.getElementById('sc-overallBar');
   const statusEl = document.getElementById('sc-status');
+  const startCard = document.getElementById('sc-startCard');
   overallLabel.textContent = `/ ${TOTAL} 個のスタンプ`;
 
   function defaultState(){
@@ -958,8 +1163,86 @@ function renderCover(){
     return {done, total: TOTAL};
   };
 
+  function todayStr(){
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  }
+  function loadStartDate(){ startDate = localStorage.getItem(START_KEY); }
+  function saveStartDate(v){ startDate = v; localStorage.setItem(START_KEY, v); }
+  function currentDayNumber(){
+    if(!startDate) return null;
+    const start = new Date(startDate + 'T00:00:00');
+    const now = new Date();
+    const nowMid = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const startMid = new Date(start.getFullYear(), start.getMonth(), start.getDate());
+    const diffDays = Math.round((nowMid - startMid) / 86400000) + 1;
+    if(diffDays < 1) return 1;
+    if(diffDays > TOTAL) return TOTAL;
+    return diffDays;
+  }
+  function renderStartCard(){
+    const day = currentDayNumber();
+    if(!startDate){
+      startCard.innerHTML = `
+        <div class="startcard-label">スタート日を選択してください</div>
+        <div>
+          <input type="date" id="sc-startDateInput">
+          <button class="startcard-btn" id="sc-setStartBtn">セットする</button>
+        </div>
+      `;
+      document.getElementById('sc-setStartBtn').addEventListener('click', ()=>{
+        const v = document.getElementById('sc-startDateInput').value;
+        if(!v){ return; }
+        saveStartDate(v);
+        renderStartCard();
+        maybeNotify();
+      });
+    } else {
+      startCard.innerHTML = `
+        <div class="startcard-current">
+          <span class="today-pill">今日は Day ${day}</span>
+          <button class="change-link" id="sc-changeStartBtn">スタート日を変更する</button>
+        </div>
+        <div class="notify-row">
+          <button class="notify-btn" id="sc-notifyBtn">🔔 リマインダー通知をオンにする</button>
+        </div>
+      `;
+      document.getElementById('sc-changeStartBtn').addEventListener('click', ()=>{
+        localStorage.removeItem(START_KEY); startDate = null;
+        renderStartCard();
+      });
+      const notifyBtn = document.getElementById('sc-notifyBtn');
+      const notifyOn = localStorage.getItem(NOTIFY_KEY) === '1' && typeof Notification !== 'undefined' && Notification.permission === 'granted';
+      if(notifyOn){ notifyBtn.textContent = '🔔 リマインダー通知：オン'; notifyBtn.classList.add('on'); }
+      notifyBtn.addEventListener('click', ()=>{
+        if(typeof Notification === 'undefined'){ alert('お使いのブラウザは通知に対応していません。'); return; }
+        Notification.requestPermission().then(perm=>{
+          if(perm === 'granted'){
+            localStorage.setItem(NOTIFY_KEY, '1');
+            renderStartCard(); maybeNotify(true);
+          } else { alert('通知が許可されませんでした。ブラウザの設定からいつでも変更できます。'); }
+        });
+      });
+    }
+  }
+  function maybeNotify(force){
+    if(typeof Notification === 'undefined') return;
+    if(Notification.permission !== 'granted') return;
+    if(localStorage.getItem(NOTIFY_KEY) !== '1') return;
+    const day = currentDayNumber();
+    if(!day) return;
+    const today = todayStr();
+    if(!force && localStorage.getItem(LAST_NOTIFIED_KEY) === today) return;
+    const [name] = PROGRAMS[Math.floor((day-1)/3)];
+    new Notification('ソウルサイクル', { body: `Day ${day}：今日のプログラムは「${name}」です。` });
+    localStorage.setItem(LAST_NOTIFIED_KEY, today);
+  }
+
   loadState();
   render();
+  loadStartDate();
+  renderStartCard();
+  maybeNotify();
 })();
 
 /* ============================================================
@@ -972,12 +1255,18 @@ function renderCover(){
   const ITEM_WEEKS = [{"week": 4, "items": ["エピジェネティックな調和 → 安定", "松果腺 → 安定", "細胞 → 安定"], "note": "各1〜2日間・最大3回／日曜はお休み"}, {"week": 5, "items": ["組織 → 安定", "骨 → 安定", "神経 → 安定"], "note": "各1〜2日間・最大3回／日曜はお休み"}, {"week": 6, "items": ["若さ → 安定", "相対的なサポート → 安定"], "note": "各1〜2日間・最大3回"}];     // weeks 4-6, item checklist
   const TOTAL = DAILY_WEEKS.reduce((a,w)=>a+w.days.length,0) + ITEM_WEEKS.reduce((a,w)=>a+w.items.length,0);
 
+  const START_KEY = 'bioenergetic-activation-start-date-v1';
+  const NOTIFY_KEY = 'bioenergetic-activation-notify-pref-v1';
+  const LAST_NOTIFIED_KEY = 'bioenergetic-activation-last-notified-v1';
+  let startDate = null;
+
   let state = null;
   const weeksContainer = document.getElementById('be-weeksContainer');
   const overallNum = document.getElementById('be-overallNum');
   const overallLabel = document.getElementById('be-overallLabel');
   const overallBar = document.getElementById('be-overallBar');
   const statusEl = document.getElementById('be-status');
+  const startCard = document.getElementById('be-startCard');
   overallLabel.textContent = `/ ${TOTAL} 個のスタンプ`;
 
   function defaultState(){
@@ -1103,8 +1392,104 @@ function renderCover(){
     return {done, total: TOTAL};
   };
 
+  function todayStr(){
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  }
+  function loadStartDate(){ startDate = localStorage.getItem(START_KEY); }
+  function saveStartDate(v){ startDate = v; localStorage.setItem(START_KEY, v); }
+  function currentWeekNumber(){
+    if(!startDate) return null;
+    const start = new Date(startDate + 'T00:00:00');
+    const now = new Date();
+    const nowMid = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const startMid = new Date(start.getFullYear(), start.getMonth(), start.getDate());
+    const diffDays = Math.round((nowMid - startMid) / 86400000);
+    if(diffDays < 0) return 1;
+    return Math.min(Math.floor(diffDays/7) + 1, 6);
+  }
+  const WEEKDAY_LABELS = ['日','月','火','水','木','金','土'];
+  function todayInfo(){
+    const week = currentWeekNumber();
+    if(!week) return null;
+    const label = WEEKDAY_LABELS[new Date().getDay()];
+    const isActiveDay = ['月','水','金'].includes(label);
+    if(week <= 3){
+      const weekDef = DAILY_WEEKS[week-1];
+      if(!isActiveDay) return { week, rest:true };
+      return { week, text: weekDef.theme };
+    } else {
+      const weekDef = ITEM_WEEKS[week-4];
+      if(!isActiveDay) return { week, rest:true };
+      return { week, text: weekDef.items.join(' / ') };
+    }
+  }
+  function renderStartCard(){
+    const week = currentWeekNumber();
+    if(!startDate){
+      startCard.innerHTML = `
+        <div class="startcard-label">スタート日を選択してください</div>
+        <div>
+          <input type="date" id="be-startDateInput">
+          <button class="startcard-btn" id="be-setStartBtn">セットする</button>
+        </div>
+      `;
+      document.getElementById('be-setStartBtn').addEventListener('click', ()=>{
+        const v = document.getElementById('be-startDateInput').value;
+        if(!v){ return; }
+        saveStartDate(v);
+        renderStartCard();
+        maybeNotify();
+      });
+    } else {
+      startCard.innerHTML = `
+        <div class="startcard-current">
+          <span class="today-pill">今週は Week ${week}</span>
+          <button class="change-link" id="be-changeStartBtn">スタート日を変更する</button>
+        </div>
+        <div class="notify-row">
+          <button class="notify-btn" id="be-notifyBtn">🔔 リマインダー通知をオンにする</button>
+        </div>
+      `;
+      document.getElementById('be-changeStartBtn').addEventListener('click', ()=>{
+        localStorage.removeItem(START_KEY); startDate = null;
+        renderStartCard();
+      });
+      const notifyBtn = document.getElementById('be-notifyBtn');
+      const notifyOn = localStorage.getItem(NOTIFY_KEY) === '1' && typeof Notification !== 'undefined' && Notification.permission === 'granted';
+      if(notifyOn){ notifyBtn.textContent = '🔔 リマインダー通知：オン'; notifyBtn.classList.add('on'); }
+      notifyBtn.addEventListener('click', ()=>{
+        if(typeof Notification === 'undefined'){ alert('お使いのブラウザは通知に対応していません。'); return; }
+        Notification.requestPermission().then(perm=>{
+          if(perm === 'granted'){
+            localStorage.setItem(NOTIFY_KEY, '1');
+            renderStartCard(); maybeNotify(true);
+          } else { alert('通知が許可されませんでした。ブラウザの設定からいつでも変更できます。'); }
+        });
+      });
+    }
+  }
+  function maybeNotify(force){
+    if(typeof Notification === 'undefined') return;
+    if(Notification.permission !== 'granted') return;
+    if(localStorage.getItem(NOTIFY_KEY) !== '1') return;
+    const info = todayInfo();
+    if(!info) return;
+    const today = todayStr();
+    if(!force && localStorage.getItem(LAST_NOTIFIED_KEY) === today) return;
+    if(info.rest){
+      new Notification('生体エネルギー活性化プロトコル', { body: `Week ${info.week}：今日はお休みの日です。` });
+    } else {
+      new Notification('生体エネルギー活性化プロトコル', { body: `Week ${info.week} 今日の項目：${info.text}` });
+    }
+    localStorage.setItem(LAST_NOTIFIED_KEY, today);
+  }
+
   loadState();
   render();
+  loadStartDate();
+  renderStartCard();
+  maybeNotify();
 })();
 
 renderCover();
